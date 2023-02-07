@@ -1,0 +1,8 @@
+.movies__item {
+    width: 30%;
+}
+
+
+.movies__item img {
+    width: 150px;
+}
