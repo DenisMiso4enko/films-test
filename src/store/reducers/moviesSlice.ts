@@ -10,20 +10,17 @@ export interface CounterState {
 }
 
 // первая загрузка фильмов
-export const fetchMovies = createAsyncThunk(
-  "movies/fetchMovies",
-  async (page: number) => {
-    try {
-      const response: Response = await fetch(
-        `https://api.themoviedb.org/3/discover/movie?api_key=30858d9213e167f0f2e99a5cb368a894&page=${page}`
-      );
-      const data = await response.json();
-      return data;
-    } catch (error: any) {
-      console.log(error.message);
-    }
+export const fetchMovies = createAsyncThunk("movies/fetchMovies", async () => {
+  try {
+    const response: Response = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?api_key=30858d9213e167f0f2e99a5cb368a894&page=1`
+    );
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.log(error.message);
   }
-);
+});
 
 // больше фильмов
 export const fetchMoreMovies = createAsyncThunk(
@@ -60,18 +57,16 @@ export const tvSlice = createSlice({
     builder.addCase(fetchMovies.pending, (state) => {});
     builder.addCase(fetchMovies.fulfilled, (state, action) => {
       const { total_pages, results } = action.payload;
+      state.totalPages = total_pages;
+      state.movies = results;
+    });
+    builder.addCase(fetchMoreMovies.pending, (state) => {});
+    builder.addCase(fetchMoreMovies.fulfilled, (state, action) => {
+      const { total_pages, results } = action.payload;
       const movies = state.movies;
       state.totalPages = total_pages;
       state.movies = [...movies, ...results];
-      // state.movies = results;
     });
-    // builder.addCase(fetchMoreMovies.pending, (state) => {});
-    // builder.addCase(fetchMoreMovies.fulfilled, (state, action) => {
-    //   const { total_pages, results } = action.payload;
-    //   const movies = state.movies;
-    //   state.totalPages = total_pages;
-    //   state.movies = [...movies, ...results];
-    // });
   },
 });
 

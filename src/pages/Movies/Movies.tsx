@@ -7,37 +7,18 @@ import "./style.css";
 
 const Movies = () => {
   const [page, setPage] = useState(1);
-  // const { currentPage } = useSelector((state: RootState) => state.movies);
   const dispatch = useDispatch<AppDispatch>();
   const { movies, totalPages } = useSelector(
     (state: RootState) => state.movies
   );
 
   useEffect(() => {
-    dispatch(fetchMovies(page));
-  }, [page]);
+    dispatch(fetchMovies());
+  }, []);
 
-  const handleLazyLoader = () => {
-    let height = document.documentElement.scrollHeight;
-    let top = document.documentElement.scrollTop;
-    let Window = window.innerHeight;
-    if (Window + top + 1 >= height) {
-      setPage((prev) => prev + 1);
-    }
+  const handleLoadMoreMovies = () => {
+    dispatch(fetchMoreMovies(page));
   };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleLazyLoader);
-    return () => {
-      window.removeEventListener("scroll", handleLazyLoader);
-    };
-  }, [page]);
-
-  // const handleLoadMoreMovies = () => {
-  //   // dispatch(setPage(currentPage! + 1));
-  //   setPage((prevState) => prevState + 1);
-  //   dispatch(fetchMoreMovies(page));
-  // };
 
   return (
     <div>
@@ -54,7 +35,7 @@ const Movies = () => {
             ))
           : "empty"}
       </div>
-      {/*<button onClick={handleLoadMoreMovies}>Загрузить еще</button>*/}
+      <button onClick={handleLoadMoreMovies}>Загрузить еще</button>
     </div>
   );
 };
